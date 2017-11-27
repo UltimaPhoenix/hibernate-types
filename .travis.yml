@@ -1,0 +1,23 @@
+language: java
+services:
+  - postgresql
+jdk:
+  - oraclejdk8
+addons:
+  postgresql: "9.6"
+  mariadb: '10.2'
+env:
+  global:
+    - JAVA_HOME_6=$JAVA_HOME
+    - JAVA_HOME_8=$JAVA_HOME
+before_install:
+  - mysql -u root -e 'CREATE DATABASE high_performance_java_persistence;'
+  - mysql -u root -e "CREATE USER 'mysql'@'localhost' IDENTIFIED BY 'password';"
+  - mysql -u root -e "GRANT ALL ON high_performance_java_persistence.* TO 'mysql'@'localhost';"
+before_script:
+  - psql -c 'create database high_performance_java_persistence;' -U postgres
+script:
+  - mvn verify -Ptravis
+cache:
+  directories:
+    - $HOME/.m2
